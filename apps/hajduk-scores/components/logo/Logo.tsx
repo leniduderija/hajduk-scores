@@ -18,7 +18,7 @@ const LogoContainer = chakra(Flex, {
       margin: 0,
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     '& h6': {
       fontSize: '10px',

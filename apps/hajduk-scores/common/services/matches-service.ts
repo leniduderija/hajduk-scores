@@ -1,65 +1,67 @@
 /* eslint-disable import/no-anonymous-default-export */
 import httpClient from '../http/http-client';
-import { League } from '@hajduk_scores/api-interfaces';
+import {
+  FixturesByRound,
+  League,
+  RoundsInterface,
+} from '@hajduk-scores/api-interfaces';
 
 const croatianLeagueId = 170;
 const season2022Id = 42138;
-const hajdukId = 2036;
+export const hajdukId = 2036;
 
 const getLeagueData = (): Promise<League> => {
   return httpClient
-    .get<any>(`unique-tournament/${croatianLeagueId}`)
+    .get(`unique-tournament/${croatianLeagueId}`)
     .then((response) => response.data);
 };
 
 const getAllSeasons = (): Promise<any> => {
   return httpClient
-    .get<any>(`unique-tournament/${croatianLeagueId}/seasons`)
-    .then((response) => response);
+    .get(`unique-tournament/${croatianLeagueId}/seasons`)
+    .then((response) => response.data);
 };
 
 const getStandings = (): Promise<any> => {
   return httpClient
-    .get<any>(
+    .get(
       `unique-tournament/${croatianLeagueId}/season/${season2022Id}/standings/total`
     )
-    .then((response) => response);
+    .then((response) => response.data);
 };
 
-const getRounds = (): Promise<any> => {
+const getRounds = (): Promise<RoundsInterface> => {
   return httpClient
-    .get<any>(
-      `unique-tournament/${croatianLeagueId}/season/${season2022Id}/rounds`
-    )
-    .then((response) => response);
+    .get(`unique-tournament/${croatianLeagueId}/season/${season2022Id}/rounds`)
+    .then((response) => response.data);
 };
 
-const getFixturesByRound = (round: number): Promise<any> => {
+const getFixturesByRound = (round: number): Promise<FixturesByRound> => {
   return httpClient
-    .get<any>(
+    .get(
       `unique-tournament/${croatianLeagueId}/season/${season2022Id}/events/round/${round}`
     )
-    .then((response) => response);
+    .then((response) => response.data);
 };
 
 const getFixture = (eventId: number): Promise<any> => {
-  return httpClient.get<any>(`event/${eventId}`).then((response) => response);
+  return httpClient.get(`event/${eventId}`).then((response) => response.data);
 };
 
 const getHajdukInfo = (): Promise<any> => {
-  return httpClient.get<any>(`/team/${hajdukId}`).then((response) => response);
+  return httpClient.get(`/team/${hajdukId}`).then((response) => response.data);
 };
 
 const getHajdukPlayers = (): Promise<any> => {
   return httpClient
-    .get<any>(`/team/${hajdukId}/players`)
-    .then((response) => response);
+    .get(`/team/${hajdukId}/players`)
+    .then((response) => response.data);
 };
 
 const getHajdukLogo = (): Promise<any> => {
   return httpClient
-    .get<any>(`team/${hajdukId}/image`)
-    .then((response) => response);
+    .get(`team/${hajdukId}/image`)
+    .then((response) => response.data);
 };
 
 export default {

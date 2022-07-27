@@ -2,6 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "api-interfaces": "libs/api-interfaces",
     "hajduk-scores": "apps/hajduk-scores",
     "hajduk-scores-e2e": "apps/hajduk-scores-e2e"
   }
