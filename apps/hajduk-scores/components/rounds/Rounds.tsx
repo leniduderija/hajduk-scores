@@ -15,7 +15,7 @@ export function Rounds({ rounds }: { rounds: RoundsInterface }) {
       defaultIndex={parseInt(JSON.stringify(rounds.currentRound.round)) - 1}
     >
       {rounds?.rounds?.map((round, index) => (
-        <AccordionItem>
+        <AccordionItem key={round.round}>
           <h2>
             <AccordionButton
               backgroundColor={

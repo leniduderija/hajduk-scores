@@ -20,7 +20,7 @@ export function FixtureTable({ round }: { round: number }) {
   const [homeGoals, setHomeGoals] = useState<number | null>(null);
   const [awayGoals, setAwayGoals] = useState<number | null>(null);
   const [tipValue, setTipValue] = useState<string | null>(null);
-  let [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
 
   // useEffect(async () => {
   //   let usersData = await fetcher('/api/getData');

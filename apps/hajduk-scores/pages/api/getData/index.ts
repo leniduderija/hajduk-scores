@@ -3,7 +3,7 @@ import { faunaClient } from '../../../common/db/fauna';
 
 export default async (req, res) => {
   if (req.method == 'GET') {
-    let query = await faunaClient.query(
+    const query = await faunaClient.query(
       q.Map(
         q.Paginate(q.Documents(q.Collection('fixtureResults'))),
         q.Lambda((show) => q.Get(show))

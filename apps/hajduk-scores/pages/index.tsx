@@ -1,11 +1,4 @@
-import {
-  Container,
-  Flex,
-  Box,
-  Text,
-  Stack,
-  useMediaQuery,
-} from '@chakra-ui/react';
+import { Container, Box, Text, Stack, useMediaQuery } from '@chakra-ui/react';
 import matchesService from '../common/services/matches-service';
 import { useEffect, useState } from 'react';
 import { RoundsInterface } from '@hajduk-scores/api-interfaces';

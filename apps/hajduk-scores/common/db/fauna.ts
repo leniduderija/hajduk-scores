@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { environment } from '../../environments/environment';
 
 const { Ref } = require('faunadb');
