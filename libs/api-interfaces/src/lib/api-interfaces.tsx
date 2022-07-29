@@ -209,3 +209,7 @@ export interface UniqueTournament {
   hasEventPlayerStatistics: boolean;
   displayInverseHomeAwayTeams: boolean;
 }
+
+export interface Test {
+  test: string;
+}
