@@ -66,7 +66,7 @@ export function FixtureTable({ round }: { round: FixtureData }) {
           >
             <Image
               borderRadius="full"
-              boxSize="150px"
+              boxSize="50px"
               src={(teams.home as Team).logo}
               alt={(teams.home as Team).name}
             />
@@ -97,7 +97,7 @@ export function FixtureTable({ round }: { round: FixtureData }) {
           >
             <Image
               borderRadius="full"
-              boxSize="150px"
+              boxSize="50px"
               src={(teams.away as Team).logo}
               alt={(teams.away as Team).name}
             />
@@ -116,12 +116,21 @@ export function FixtureTable({ round }: { round: FixtureData }) {
           <Box fontWeight="bold" mr={4}>
             Konačan rezultat:
           </Box>
-          <Box mx={2}>
-            {score.fulltime.home} ({score.halftime.home})
-          </Box>
-          <Box>:</Box>
-          <Box mx={2}>
-            {score.fulltime.away} ({score.halftime.away})
+          <Flex flexDirection="row">
+            <Box mr={1}>{score.fulltime.home as number}</Box>
+            <Box>({score.halftime.home as number})</Box>
+          </Flex>
+          <Box mx={2}>:</Box>
+          <Flex flexDirection="row">
+            <Box mr={1}>{score.fulltime.away as number}</Box>
+            <Box>({score.halftime.away as number})</Box>
+          </Flex>
+        </Flex>
+      )}
+      {fixture?.status.short === Short.Pst && (
+        <Flex flexDirection="row">
+          <Box fontWeight="bold" mr={4}>
+            Odgođeno.
           </Box>
         </Flex>
       )}

@@ -33,7 +33,7 @@ export function Rounds({ rounds }: { rounds: FixtureData[] }) {
               }}
             >
               <Box flex="1" textAlign="left">
-                Round {index + 1}
+                Kolo {index + 1}
               </Box>
               <AccordionIcon />
             </AccordionButton>
