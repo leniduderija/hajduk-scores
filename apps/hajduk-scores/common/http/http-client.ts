@@ -4,10 +4,11 @@ import { HttpError } from './http';
 
 const axiosInstance = axios.create({
   withCredentials: false,
-  baseURL: environment.sofaScoreApiBaseUrl,
+  baseURL: environment.rapidApiFootballBaseUrl,
   headers: {
     'Content-Type': 'application/json',
-    // 'x-apisports-key': environment.apiFootballApiKey
+    'X-RapidAPI-Key': environment.rapidApiFootballKey,
+    'X-RapidAPI-Host': environment.rapidApiFootballHost,
   },
 });
 

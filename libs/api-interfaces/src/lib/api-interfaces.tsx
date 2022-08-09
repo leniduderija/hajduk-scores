@@ -1,215 +1,104 @@
-export interface League {
-  uniqueTournament: UniqueTournament;
+export interface RapidApiFixturesResponse {
+  errors: string[];
+  get: string;
+  paging: Pagination;
+  parameters: any;
+  response: FixtureData[];
+  results: number;
 }
 
-export interface UniqueTournament {
-  name: string;
-  slug: string;
-  primaryColorHex: string;
-  secondaryColorHex: string;
-  logo: Logo;
-  category: Category;
-  userCount: number;
-  tier: number;
-  titleHolder: TitleHolder;
-  titleHolderTitles: number;
-  mostTitles: number;
-  mostTitlesTeams: TitleHolder[];
-  linkedUniqueTournaments: any[];
-  hasStandingsGroups: boolean;
-  hasRounds: boolean;
-  hasPlayoffSeries: boolean;
-  upperDivisions: any[];
-  lowerDivisions: LowerDivision[];
-  hasDisabledHomeAwayStandings: boolean;
-  hasPositionGraph: boolean;
-  id: number;
-  startDateTimestamp: number;
-  endDateTimestamp: number;
-  displayInverseHomeAwayTeams: boolean;
+export interface Pagination {
+  current: number;
+  total: number;
 }
 
-export interface Category {
-  name: string;
-  slug: string;
-  sport: Sport;
-  id: number;
-  flag: string;
-  alpha2: string;
-}
-
-export interface Sport {
-  name: string;
-  slug: string;
-  id: number;
-}
-
-export interface Logo {
-  md5: string;
-  id: number;
-}
-
-export interface LowerDivision {
-  name: string;
-  slug: string;
-  primaryColorHex: string;
-  secondaryColorHex: string;
-  logo: Logo;
-  category: Category;
-  tier: number;
-  hasRounds: boolean;
-  hasPlayoffSeries: boolean;
-  hasDisabledHomeAwayStandings: boolean;
-  hasPositionGraph: boolean;
-  id: number;
-  startDateTimestamp: number;
-  endDateTimestamp: number;
-  displayInverseHomeAwayTeams: boolean;
-}
-
-export interface TitleHolder {
-  name: string;
-  slug: string;
-  shortName: string;
-  gender: string;
-  sport: Sport;
-  userCount: number;
-  nameCode: string;
-  disabled: boolean;
-  national: boolean;
-  type: number;
-  id: number;
-  teamColors: TeamColors;
-}
-
-export interface TeamColors {
-  primary: string;
-  secondary: string;
-  text: string;
-}
-
-export interface Round {
-  round: number;
-}
-
-export interface RoundsInterface {
-  currentRound: Round;
-  rounds: Round[];
-}
-
-export interface FixturesByRound {
-  events: Fixture[];
-  hasNextPage: boolean;
+export interface FixtureData {
+  fixture: Fixture;
+  league: League;
+  teams: HomeAway;
+  goals: HomeAway;
+  score: Score;
 }
 
 export interface Fixture {
-  tournament: Tournament;
-  roundInfo: RoundInfo;
-  customId: string;
+  id: number;
+  referee: null | string;
+  timezone: Timezone;
+  date: Date;
+  timestamp: number;
+  periods: Periods;
+  venue: Venue;
   status: Status;
-  winnerCode: number;
-  homeTeam: Team;
-  awayTeam: Team;
-  homeScore: Score;
-  awayScore: Score;
-  time: Time;
-  changes: Changes;
-  hasGlobalHighlights: boolean;
-  hasEventPlayerStatistics?: boolean;
-  hasEventPlayerHeatMap?: boolean;
-  id: number;
-  awayRedCards?: number;
-  startTimestamp: number;
-  slug: string;
-  finalResultOnly: boolean;
 }
 
-export interface Score {
-  current?: number;
-  display?: number;
-  period1?: number;
-  period2?: number;
-  normaltime?: number;
-}
-
-export interface Team {
-  name: string;
-  slug: string;
-  shortName: string;
-  gender: string;
-  sport: Sport;
-  userCount: number;
-  nameCode: string;
-  disabled?: boolean;
-  national: boolean;
-  type: number;
-  id: number;
-  subTeams: any[];
-  teamColors: TeamColors;
-}
-
-export interface Sport {
-  name: string;
-  slug: string;
-  id: number;
-}
-
-export interface TeamColors {
-  primary: string;
-  secondary: string;
-  text: string;
-}
-
-export interface Changes {
-  changes?: string[];
-  changeTimestamp: number;
-}
-
-export interface RoundInfo {
-  round: number;
+export interface Periods {
+  first: number | null;
+  second: number | null;
 }
 
 export interface Status {
-  code: number;
-  description: string;
-  type: string;
+  long: Long;
+  short: Short;
+  elapsed: number | null;
 }
 
-export interface Time {
-  injuryTime1?: number;
-  injuryTime2?: number;
-  currentPeriodStartTimestamp?: number;
+export enum Long {
+  MatchFinished = 'Match Finished',
+  MatchPostponed = 'Match Postponed',
+  NotStarted = 'Not Started',
+  TimeToBeDefined = 'Time to be defined',
 }
 
-export interface Tournament {
-  name: string;
-  slug: string;
-  category: Category;
-  uniqueTournament: UniqueTournament;
-  priority: number;
+export enum Short {
+  Ft = 'FT',
+  NS = 'NS',
+  Pst = 'PST',
+  Tbd = 'TBD',
+}
+
+export enum Timezone {
+  UTC = 'UTC',
+}
+
+export interface Venue {
   id: number;
+  name: string;
+  city: string;
 }
 
-export interface Category {
-  name: string;
-  slug: string;
-  sport: Sport;
+export interface HomeAway {
+  home: Team | number | null;
+  away: Team | number | null;
+}
+
+export interface Team {
   id: number;
+  name: string;
+  logo: string;
+  winner: boolean | null;
+}
+
+export interface League {
+  id: number;
+  name: Name;
+  country: Country;
+  logo: string;
   flag: string;
-  alpha2: string;
+  season: number;
+  round: string;
 }
 
-export interface UniqueTournament {
-  name: string;
-  slug: string;
-  category: Category;
-  userCount: number;
-  hasPositionGraph: boolean;
-  id: number;
-  hasEventPlayerStatistics: boolean;
-  displayInverseHomeAwayTeams: boolean;
+export enum Country {
+  Croatia = 'Croatia',
 }
 
-export interface Test {
-  test: string;
+export enum Name {
+  Hnl = 'HNL',
+}
+
+export interface Score {
+  halftime: HomeAway;
+  fulltime: HomeAway;
+  extratime: HomeAway;
+  penalty: HomeAway;
 }

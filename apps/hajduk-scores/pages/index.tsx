@@ -1,20 +1,19 @@
 import { Container, Box, Text, Stack, useMediaQuery } from '@chakra-ui/react';
 import matchesService from '../common/services/matches-service';
 import { useEffect, useState } from 'react';
-import { RoundsInterface } from '@hajduk-scores/api-interfaces';
+import { FixtureData } from '@hajduk-scores/api-interfaces';
 import Rounds from '../components/rounds/Rounds';
 import theme from '../common/theme';
 
 export function Index() {
   const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
-  const [rounds, setRounds] = useState<RoundsInterface | null>(null);
+  const [rounds, setRounds] = useState<FixtureData[] | null>(null);
   useEffect(() => {
     matchesService
-      .getRounds()
+      .getHajdukFixtures()
       .then((data) => {
-        console.debug('get rounds data ', data);
-        setRounds(data);
+        setRounds(data.response);
       })
       .catch((error) => {
         console.error('ERROR! Failed to fetch rounds: ', error);

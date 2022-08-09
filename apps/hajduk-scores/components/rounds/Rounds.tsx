@@ -1,21 +1,22 @@
 import {
-  Box,
   Accordion,
-  AccordionItem,
   AccordionButton,
-  AccordionPanel,
   AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Box,
 } from '@chakra-ui/react';
-import { RoundsInterface } from '@hajduk-scores/api-interfaces';
+import { FixtureData, Short } from '@hajduk-scores/api-interfaces';
 import FixtureTable from '../fixture-table/FixtureTable';
 
-export function Rounds({ rounds }: { rounds: RoundsInterface }) {
+export function Rounds({ rounds }: { rounds: FixtureData[] }) {
+  const currentRound = rounds.findIndex(
+    (round) => round.fixture.status.short === Short.NS
+  );
   return (
-    <Accordion
-      defaultIndex={parseInt(JSON.stringify(rounds.currentRound.round)) - 1}
-    >
-      {rounds?.rounds?.map((round, index) => (
-        <AccordionItem key={round.round}>
+    <Accordion defaultIndex={currentRound}>
+      {rounds?.map((round, index) => (
+        <AccordionItem key={round.fixture.id}>
           <h2>
             <AccordionButton
               backgroundColor={
@@ -32,13 +33,13 @@ export function Rounds({ rounds }: { rounds: RoundsInterface }) {
               }}
             >
               <Box flex="1" textAlign="left">
-                Round {round.round}
+                Round {index + 1}
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <FixtureTable round={round.round} />
+            <FixtureTable round={round} />
           </AccordionPanel>
         </AccordionItem>
       ))}
