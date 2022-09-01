@@ -47,3 +47,23 @@ export const useControlNavbar = () => {
 
   return { lastScrollY, show };
 };
+
+export const findObjectByNearestDate = (array, targetDate) => {
+  const diffDate = new Date(targetDate);
+  const sortedArray = array
+    .sort(function (a, b) {
+      // Turn your strings into dates, and then subtract them
+      // to get a value that is either negative, positive, or zero.
+
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      const distancea = Math.abs(diffDate - dateA);
+      const distanceb = Math.abs(diffDate - dateB);
+      return distancea - distanceb; // sort a before b when the distance is smaller
+    })
+    .filter(function (d) {
+      const date = new Date(d.date);
+      return date - diffDate >= 0;
+    });
+  return sortedArray[0];
+};

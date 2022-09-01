@@ -26,3 +26,13 @@ axiosInstance.interceptors.response.use(
 );
 
 export default axiosInstance;
+
+export const fetcher = (url) => fetch(url).then((res) => res.json());
+export const poster = (url, data) =>
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  }).then((res) => res.json());

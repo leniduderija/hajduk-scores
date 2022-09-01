@@ -1,3 +1,22 @@
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+  fixtures: ApiFixture[];
+}
+
+export interface ApiFixture {
+  fixtureId: string;
+  round: number;
+  tip: number;
+  user: User;
+  userId: string;
+  homeScore: number;
+  awayScore: number;
+}
+
 export interface RapidApiFixturesResponse {
   errors: string[];
   get: string;

@@ -6,17 +6,29 @@ import {
   AccordionPanel,
   Box,
 } from '@chakra-ui/react';
-import { FixtureData, Short } from '@hajduk-scores/api-interfaces';
+import { ApiFixture, FixtureData, Short } from '@hajduk-scores/api-interfaces';
 import FixtureTable from '../fixture-table/FixtureTable';
+import { findObjectByNearestDate } from '../../common/utils';
 
-export function Rounds({ rounds }: { rounds: FixtureData[] }) {
-  const currentRound = rounds.findIndex(
-    (round) => round.fixture.status.short === Short.NS
+const today = new Date();
+
+export function Rounds({
+  rounds,
+  onSubmit,
+}: {
+  rounds: any[];
+  onSubmit: (values) => void;
+}) {
+  const fixtures = rounds?.map((round) => round.fixture);
+  const closestFixtureByDate = findObjectByNearestDate(fixtures, today);
+  const currentRound = rounds?.findIndex(
+    (round) => round.fixture.id === closestFixtureByDate.id
   );
+
   return (
-    <Accordion defaultIndex={currentRound}>
+    <Accordion defaultIndex={currentRound} borderRadius={4} overflow="hidden">
       {rounds?.map((round, index) => (
-        <AccordionItem key={round.fixture.id}>
+        <AccordionItem key={`${round.userId}_${index}`}>
           <h2>
             <AccordionButton
               backgroundColor={
@@ -39,7 +51,7 @@ export function Rounds({ rounds }: { rounds: FixtureData[] }) {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <FixtureTable round={round} />
+            <FixtureTable round={round} onSubmit={onSubmit} />
           </AccordionPanel>
         </AccordionItem>
       ))}

@@ -1,9 +1,15 @@
-import { Box, chakra, Flex, Input, Spinner, Image } from '@chakra-ui/react';
+import {
+  Box,
+  chakra,
+  Flex,
+  Input,
+  Spinner,
+  Image,
+  Button,
+} from '@chakra-ui/react';
 import { hajdukId } from '../../common/services/matches-service';
 import { useEffect, useState } from 'react';
 import { FixtureData, Short, Team } from '@hajduk-scores/api-interfaces';
-
-// const fetcher = (url) => fetch(url).then((res) => res.json());
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -13,20 +19,21 @@ const StyledInput = chakra(Input, {
   },
 });
 
-export function FixtureTable({ round }: { round: FixtureData }) {
-  console.debug('Fixture table round ', round);
-  const { goals, fixture, teams, score } = round;
+export function FixtureTable({
+  round,
+  onSubmit,
+}: {
+  round: any;
+  onSubmit: (values: any) => void;
+}) {
+  const { fixture, teams, score, homeScore, awayScore, tip } = round;
 
-  const [homeGoals, setHomeGoals] = useState<number | null>(null);
-  const [awayGoals, setAwayGoals] = useState<number | null>(null);
-  const [tipValue, setTipValue] = useState<string | null>(null);
-  // const [users, setUsers] = useState([]);
-
-  // useEffect(async () => {
-  //   let usersData = await fetcher('/api/getData');
-  //   // setUsers(usersData.data);
-  //   console.debug('users data ', usersData);
-  // }, []);
+  const [homeGoals, setHomeGoals] = useState<number | null>(homeScore);
+  const [awayGoals, setAwayGoals] = useState<number | null>(awayScore);
+  const [userPredictedTipValue, setUserPredictedTipValue] = useState<
+    string | null
+  >(tip);
+  const [tipValue, setTipValue] = useState<string | null>(tip);
 
   useEffect(() => {
     if ((homeGoals || homeGoals === 0) && (awayGoals || awayGoals === 0)) {
@@ -42,17 +49,18 @@ export function FixtureTable({ round }: { round: FixtureData }) {
     }
   }, [homeGoals, awayGoals]);
 
-  // const [users, setUsers] = useState([]);
-
-  // useEffect(async () => {
-  //   let usersData = await fetcher('/api/getData');
-  //   // setUsers(usersData.data);
-  //   console.debug('users data ', usersData);
-  // }, []);
-
   const hajdukIsHomeTeam = (teams.home as Team).id === hajdukId;
 
-  console.debug('hajduk fixture ', round);
+  const handleSubmit = () => {
+    const fixtureNumber = parseInt(round.league.round.split(' ')[3]);
+    const fixture = {
+      homeScore: homeGoals,
+      awayScore: awayGoals,
+      round: fixtureNumber,
+      tip: parseInt(tipValue),
+    };
+    onSubmit(fixture);
+  };
 
   return round ? (
     <Flex flexDirection="column">
@@ -76,6 +84,7 @@ export function FixtureTable({ round }: { round: FixtureData }) {
             variant="flushed"
             type="number"
             min={0}
+            value={homeGoals}
             onChange={(e) => setHomeGoals(parseInt(e.target.value))}
             disabled={fixture.status.short === Short.Ft}
           />
@@ -86,6 +95,7 @@ export function FixtureTable({ round }: { round: FixtureData }) {
             variant="flushed"
             type="number"
             min={0}
+            value={awayGoals}
             onChange={(e) => setAwayGoals(parseInt(e.target.value))}
             disabled={fixture.status.short === Short.Ft}
           />
@@ -132,6 +142,13 @@ export function FixtureTable({ round }: { round: FixtureData }) {
           <Box fontWeight="bold" mr={4}>
             Odgođeno.
           </Box>
+        </Flex>
+      )}
+      {fixture?.status.short === Short.NS && (
+        <Flex flexDirection="row">
+          <Button onClick={handleSubmit} disabled={!homeGoals || !awayGoals}>
+            SAVE
+          </Button>
         </Flex>
       )}
     </Flex>
