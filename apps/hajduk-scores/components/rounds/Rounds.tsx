@@ -6,7 +6,6 @@ import {
   AccordionPanel,
   Box,
 } from '@chakra-ui/react';
-import { ApiFixture, FixtureData, Short } from '@hajduk-scores/api-interfaces';
 import FixtureTable from '../fixture-table/FixtureTable';
 import { findObjectByNearestDate } from '../../common/utils';
 

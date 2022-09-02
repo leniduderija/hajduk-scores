@@ -1,18 +1,18 @@
 import {
   Container,
   Box,
-  Text,
   Stack,
   Select,
   Flex,
   useMediaQuery,
 } from '@chakra-ui/react';
-import matchesService from '../common/services/matches-service';
 import { useEffect, useState } from 'react';
-import { ApiFixture, FixtureData, User } from '@hajduk-scores/api-interfaces';
+import { ApiFixture } from '@hajduk-scores/api-interfaces';
 import Rounds from '../components/rounds/Rounds';
 import theme from '../common/theme';
-import { fetcher, poster } from '../common/http/http-client';
+import { fetcher, poster, updater } from '../common/http/http-client';
+import { useContextState } from '../common/context/state-context';
+import { Leaderboard } from '../components/leaderboard/Leaderboard';
 
 async function fetchData(userId) {
   const fixturesData: ApiFixture[] = await fetcher(`/api/fixtures/${userId}`);
@@ -20,43 +20,16 @@ async function fetchData(userId) {
 }
 
 export function Index() {
-  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
-  const [rounds, setRounds] = useState<FixtureData[] | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
+  const { rounds, users, selectedUser, setSelectedUser, leaderBoard } =
+    useContextState();
+
   const [fixtures, setFixtures] = useState<ApiFixture[]>([]);
   const [userFixturesMapped, setUserFixturesMapped] = useState<any[]>(null);
 
-  const [selectedUser, setSelectedUser] = useState<string | null>();
-
-  useEffect(() => {
-    matchesService
-      .getHajdukFixtures()
-      .then((data) => {
-        setRounds(data.response);
-      })
-      .catch((error) => {
-        console.error('ERROR! Failed to fetch rounds: ', error);
-      });
-
-    async function fetchUsers() {
-      const usersData: User[] = await fetcher('/api/users');
-      // const fixturesData: ApiFixture[] = await fetcher('/api/fixtures');
-      // return { users: usersData, fixtures: fixturesData };
-      return { users: usersData };
-    }
-    fetchUsers()
-      .then((data) => {
-        setUsers(data.users);
-        // setFixtures(data.fixtures);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
   useEffect(() => {
     if (users && users.length > 0) {
-      setSelectedUser(users[0].id);
-      setFixtures(null);
       fetchData(users[0].id)
         .then((data) => {
           setFixtures(data.userFixtures);
@@ -67,8 +40,6 @@ export function Index() {
 
   useEffect(() => {
     if (selectedUser) {
-      // first we reset fixtures
-      setFixtures(null);
       fetchData(selectedUser)
         .then((data) => {
           setFixtures(data.userFixtures);
@@ -91,18 +62,27 @@ export function Index() {
   }, [fixtures, selectedUser, rounds]);
 
   const handleSubmit = (values) => {
-    async function createUser() {
-      const valuesForSubmit = {
-        ...values,
-        userId: selectedUser,
-      };
-      const usersData: any[] = await poster(
-        '/api/fixture/create',
-        valuesForSubmit
+    async function createOrUpdateUser() {
+      const existingRound = fixtures?.find(
+        (fixture) => fixture.round === values.round
       );
+
+      const valuesForSubmit = !!existingRound
+        ? {
+            ...values,
+            fixtureId: existingRound.fixtureId,
+            userId: selectedUser,
+          }
+        : {
+            ...values,
+            userId: selectedUser,
+          };
+      const usersData: any[] = !!existingRound
+        ? await updater('/api/fixture/update', valuesForSubmit)
+        : await poster('/api/fixture/create', valuesForSubmit);
       return { users: usersData };
     }
-    createUser()
+    createOrUpdateUser()
       .then(() => {
         fetchData(selectedUser)
           .then((data) => {
@@ -139,7 +119,7 @@ export function Index() {
           </Box>
         </Flex>
         <Box width={isSmallScreen ? '100%' : '30%'}>
-          <Text fontSize="lg">LJESTVICA</Text>
+          <Leaderboard leaderboard={leaderBoard} />
         </Box>
       </Stack>
     </Container>

@@ -33,9 +33,12 @@ export function Logo() {
     <LogoContainer>
       <h2>
         <Box color="red">H</Box>
-        <Box color="blue">S</Box>
+        <Box color="blue">Ž</Box>
+        <Box color="red">V</Box>
       </h2>
-      <h6>Hajduk Scores</h6>
+      <h6>
+        <i>Hajduk Scores</i>
+      </h6>
     </LogoContainer>
   );
 }

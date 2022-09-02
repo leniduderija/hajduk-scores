@@ -6,6 +6,7 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import createEmotionCache from '../common/createEmotionCache';
 import theme from '../common/theme';
 import Layout from '../components/layout/Layout';
+import { StateProvider } from '../common/context/state-context';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -22,12 +23,14 @@ function CustomApp({
   return (
     <CacheProvider value={emotionCache}>
       <ChakraProvider theme={theme}>
-        <Layout>
-          <Head>
-            <title>Hajduk Scores</title>
-          </Head>
-          <Component {...pageProps} />
-        </Layout>
+        <StateProvider>
+          <Layout>
+            <Head>
+              <title>Hajduk Scores</title>
+            </Head>
+            <Component {...pageProps} />
+          </Layout>
+        </StateProvider>
       </ChakraProvider>
     </CacheProvider>
   );

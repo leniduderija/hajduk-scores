@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { hajdukId } from '../../common/services/matches-service';
 import { useEffect, useState } from 'react';
-import { FixtureData, Short, Team } from '@hajduk-scores/api-interfaces';
+import { Short, Team } from '@hajduk-scores/api-interfaces';
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -30,9 +30,6 @@ export function FixtureTable({
 
   const [homeGoals, setHomeGoals] = useState<number | null>(homeScore);
   const [awayGoals, setAwayGoals] = useState<number | null>(awayScore);
-  const [userPredictedTipValue, setUserPredictedTipValue] = useState<
-    string | null
-  >(tip);
   const [tipValue, setTipValue] = useState<string | null>(tip);
 
   useEffect(() => {
@@ -146,7 +143,12 @@ export function FixtureTable({
       )}
       {fixture?.status.short === Short.NS && (
         <Flex flexDirection="row">
-          <Button onClick={handleSubmit} disabled={!homeGoals || !awayGoals}>
+          <Button
+            onClick={handleSubmit}
+            disabled={
+              (!homeGoals && homeGoals !== 0) || (!awayGoals && awayGoals !== 0)
+            }
+          >
             SAVE
           </Button>
         </Flex>
