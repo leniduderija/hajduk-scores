@@ -29,6 +29,9 @@ const colors = {
     black: {
       primary: '#000',
     },
+    red: {
+      primary: '#E53E3E',
+    },
   },
 };
 

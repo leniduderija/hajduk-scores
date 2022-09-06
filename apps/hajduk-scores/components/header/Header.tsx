@@ -21,6 +21,9 @@ const MobileLeaderboard = chakra(Box, {
     fontSize: 10,
     textAlign: 'right',
     color: '#fff',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    padding: '10px',
+    zIndex: 1,
   },
 });
 
@@ -31,7 +34,7 @@ export function Header() {
     <HeaderContainer>
       <Container>
         <Logo />
-        {isSmallScreen && (
+        {true && (
           <MobileLeaderboard>
             <Leaderboard hideTitle={true} leaderboard={leaderBoard} />
           </MobileLeaderboard>

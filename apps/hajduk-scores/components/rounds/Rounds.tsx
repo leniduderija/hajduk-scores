@@ -7,9 +7,7 @@ import {
   Box,
 } from '@chakra-ui/react';
 import FixtureTable from '../fixture-table/FixtureTable';
-import { findObjectByNearestDate } from '../../common/utils';
-
-const today = new Date();
+import { findClosestRoundByDate } from '../../common/utils';
 
 export function Rounds({
   rounds,
@@ -18,11 +16,7 @@ export function Rounds({
   rounds: any[];
   onSubmit: (values) => void;
 }) {
-  const fixtures = rounds?.map((round) => round.fixture);
-  const closestFixtureByDate = findObjectByNearestDate(fixtures, today);
-  const currentRound = rounds?.findIndex(
-    (round) => round.fixture.id === closestFixtureByDate.id
-  );
+  const currentRound = findClosestRoundByDate(rounds);
 
   return (
     <Accordion defaultIndex={currentRound} borderRadius={4} overflow="hidden">

@@ -9,6 +9,7 @@ import React, {
 import { ApiFixture, FixtureData, User } from '@hajduk-scores/api-interfaces';
 import matchesService from '../services/matches-service';
 import { fetcher } from '../http/http-client';
+import { findClosestRoundByDate } from '../utils';
 
 interface StateProviderProps {
   children: ReactNode;
@@ -18,27 +19,36 @@ type State = {
   rounds: FixtureData[];
   users: User[];
   allUsersFixtures: ApiFixture[];
+  userFixtures: ApiFixture[];
   leaderBoard: {
     user: User;
     totalUserPoints: number;
   }[];
   selectedUser: string;
   setSelectedUser: (value) => void;
+  setUserFixtures: (value) => void;
+  setAllUsersFixtures: (value) => void;
+  onRefreshFixtureData: () => void;
 };
 
 const StateContext = createContext<State>({
   rounds: null,
   users: null,
   allUsersFixtures: null,
+  userFixtures: null,
   leaderBoard: null,
   selectedUser: null,
   setSelectedUser: () => ({}),
+  setUserFixtures: () => ({}),
+  setAllUsersFixtures: () => ({}),
+  onRefreshFixtureData: () => ({}),
 });
 
 export const StateProvider = ({ children }: StateProviderProps) => {
   const [rounds, setRounds] = useState<FixtureData[] | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [allUsersFixtures, setAllUsersFixtures] = useState<ApiFixture[]>([]);
+  const [userFixtures, setUserFixtures] = useState<ApiFixture[]>([]);
   const [selectedUser, setSelectedUser] = useState<string | null>();
 
   useEffect(() => {
@@ -65,13 +75,37 @@ export const StateProvider = ({ children }: StateProviderProps) => {
       .catch((err) => console.error(err));
   }, []);
 
+  useEffect(() => {
+    async function fetchData(userId) {
+      const fixturesData: ApiFixture[] = await fetcher(
+        `/api/fixtures/${userId}`
+      );
+      return { userFixtures: fixturesData };
+    }
+
+    if (selectedUser) {
+      fetchData(selectedUser)
+        .then((data) => {
+          setUserFixtures(data.userFixtures);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [selectedUser]);
+
+  const currentRoundIndex = useMemo(
+    () => findClosestRoundByDate(rounds),
+    [rounds]
+  );
+
   const leaderBoardScores = useMemo(() => {
     const usersMap = {};
     allUsersFixtures?.map((fixture) => {
-      if (usersMap[fixture.userId]) {
-        usersMap[fixture.userId].push(fixture);
-      } else {
-        usersMap[fixture.userId] = [fixture];
+      if (fixture.round <= currentRoundIndex + 1) {
+        if (usersMap[fixture.userId]) {
+          usersMap[fixture.userId].push(fixture);
+        } else {
+          usersMap[fixture.userId] = [fixture];
+        }
       }
     });
     const leaderBoardArray = Object.keys(usersMap).map((key) => {
@@ -94,13 +128,9 @@ export const StateProvider = ({ children }: StateProviderProps) => {
           const homePoints = fixture.homeScore === endResultHomeGoals;
           const awayPoints = fixture.awayScore === endResultAwayGoals;
           const tipPoints = fixture.tip === endResultTip;
-          // debugger;
 
-          // const points = homePoints && awayPoints ? 3 : tipPoints ? 1 : 0;
           fixture.totalPoints =
             homePoints && awayPoints ? 3 : tipPoints ? 1 : 0;
-
-          // console.debug('fixture.totalPoints ', key, fixture.totalPoints);
 
           totalUserPoints += fixture.totalPoints;
         }
@@ -120,16 +150,40 @@ export const StateProvider = ({ children }: StateProviderProps) => {
     );
   }, [allUsersFixtures]);
 
+  const refreshFixtureData = () => {
+    async function fetchData() {
+      const fixturesData: ApiFixture[] = await fetcher(`/api/fixtures`);
+      return { userFixtures: fixturesData };
+    }
+
+    fetchData()
+      .then((data) => {
+        setUserFixtures(data.userFixtures);
+      })
+      .catch((err) => console.error(err));
+  };
+
   const value = useMemo(() => {
     return {
       rounds,
       users,
       allUsersFixtures,
+      userFixtures,
       selectedUser,
       setSelectedUser,
+      setUserFixtures,
+      setAllUsersFixtures,
       leaderBoard: leaderBoardScores,
+      onRefreshFixtureData: refreshFixtureData,
     };
-  }, [rounds, users, allUsersFixtures, selectedUser, leaderBoardScores]);
+  }, [
+    rounds,
+    users,
+    allUsersFixtures,
+    userFixtures,
+    selectedUser,
+    leaderBoardScores,
+  ]);
 
   return (
     <StateContext.Provider value={value}>{children}</StateContext.Provider>

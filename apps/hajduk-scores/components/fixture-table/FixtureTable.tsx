@@ -10,6 +10,7 @@ import {
 import { hajdukId } from '../../common/services/matches-service';
 import { useEffect, useState } from 'react';
 import { Short, Team } from '@hajduk-scores/api-interfaces';
+import { calculateTip } from '../../common/utils';
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -20,7 +21,7 @@ const StyledInput = chakra(Input, {
 });
 
 export function FixtureTable({
-  round,
+  round = {},
   onSubmit,
 }: {
   round: any;
@@ -34,19 +35,11 @@ export function FixtureTable({
 
   useEffect(() => {
     if ((homeGoals || homeGoals === 0) && (awayGoals || awayGoals === 0)) {
-      if (homeGoals === awayGoals) {
-        setTipValue('0');
-      }
-      if (homeGoals > awayGoals) {
-        setTipValue('1');
-      }
-      if (homeGoals < awayGoals) {
-        setTipValue('2');
-      }
+      setTipValue(calculateTip(homeGoals, awayGoals));
     }
   }, [homeGoals, awayGoals]);
 
-  const hajdukIsHomeTeam = (teams.home as Team).id === hajdukId;
+  const hajdukIsHomeTeam = (teams?.home as Team)?.id === hajdukId;
 
   const handleSubmit = () => {
     const fixtureNumber = parseInt(round.league.round.split(' ')[3]);
@@ -59,12 +52,18 @@ export function FixtureTable({
     onSubmit(fixture);
   };
 
+  const disabledSubmit =
+    (!homeGoals && homeGoals !== 0) ||
+    (!awayGoals && awayGoals !== 0) ||
+    (homeGoals === homeScore && awayGoals === awayScore);
+
   return round ? (
     <Flex flexDirection="column">
       <Flex flexDirection="row" alignItems="center" mb={4}>
         <Flex flexDirection="row" mr={2} alignItems="center">
           <Flex
             flexDirection="row"
+            alignItems="center"
             fontSize="16px"
             mr={2}
             fontWeight={hajdukIsHomeTeam ? 'bold' : 'normal'}
@@ -98,6 +97,7 @@ export function FixtureTable({
           />
           <Flex
             flexDirection="row"
+            alignItems="center"
             fontSize="16px"
             ml={2}
             fontWeight={!hajdukIsHomeTeam ? 'bold' : 'normal'}
@@ -142,13 +142,8 @@ export function FixtureTable({
         </Flex>
       )}
       {fixture?.status.short === Short.NS && (
-        <Flex flexDirection="row">
-          <Button
-            onClick={handleSubmit}
-            disabled={
-              (!homeGoals && homeGoals !== 0) || (!awayGoals && awayGoals !== 0)
-            }
-          >
+        <Flex flexDirection="row" justifyContent="flex-end">
+          <Button onClick={handleSubmit} disabled={disabledSubmit}>
             SAVE
           </Button>
         </Flex>

@@ -1,20 +1,26 @@
 import {
   Container,
-  Box,
   Stack,
-  Select,
+  Button,
   Flex,
   useMediaQuery,
+  useBoolean,
+  useToast,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { ApiFixture } from '@hajduk-scores/api-interfaces';
-import Rounds from '../components/rounds/Rounds';
 import theme from '../common/theme';
 import { fetcher, poster, updater } from '../common/http/http-client';
 import { useContextState } from '../common/context/state-context';
-import { Leaderboard } from '../components/leaderboard/Leaderboard';
+// import { Leaderboard } from '../components/leaderboard/Leaderboard';
+import RoundViewLayout from '../components/round-view-layout/RoundViewLayout';
+import UserViewLayout from '../components/user-view-layout/UserViewLayout';
 
-async function fetchData(userId) {
+async function fetchData() {
+  const fixturesData: ApiFixture[] = await fetcher('/api/fixtures');
+  return { allUserFixtures: fixturesData };
+}
+
+async function fetchUserData(userId) {
   const fixturesData: ApiFixture[] = await fetcher(`/api/fixtures/${userId}`);
   return { userFixtures: fixturesData };
 }
@@ -22,49 +28,23 @@ async function fetchData(userId) {
 export function Index() {
   const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
-  const { rounds, users, selectedUser, setSelectedUser, leaderBoard } =
-    useContextState();
+  const toast = useToast();
 
-  const [fixtures, setFixtures] = useState<ApiFixture[]>([]);
-  const [userFixturesMapped, setUserFixturesMapped] = useState<any[]>(null);
+  const [roundsView, setRoundsView] = useBoolean();
 
-  useEffect(() => {
-    if (users && users.length > 0) {
-      fetchData(users[0].id)
-        .then((data) => {
-          setFixtures(data.userFixtures);
-        })
-        .catch((err) => console.error(err));
-    }
-  }, [users]);
-
-  useEffect(() => {
-    if (selectedUser) {
-      fetchData(selectedUser)
-        .then((data) => {
-          setFixtures(data.userFixtures);
-        })
-        .catch((err) => console.error(err));
-    }
-  }, [selectedUser]);
-
-  useEffect(() => {
-    if (fixtures && selectedUser) {
-      const mappedRoundsByUser = rounds?.map((round) => {
-        const fixtureNumber = parseInt(round.league.round.split(' ')[3]);
-        const userFixture = fixtures?.find(
-          (fixture) => fixture.round === fixtureNumber
-        );
-        return { ...round, ...userFixture };
-      });
-      setUserFixturesMapped(mappedRoundsByUser);
-    }
-  }, [fixtures, selectedUser, rounds]);
+  const {
+    selectedUser,
+    leaderBoard,
+    allUsersFixtures,
+    setAllUsersFixtures,
+    setUserFixtures,
+  } = useContextState();
 
   const handleSubmit = (values) => {
     async function createOrUpdateUser() {
-      const existingRound = fixtures?.find(
-        (fixture) => fixture.round === values.round
+      const existingRound = allUsersFixtures?.find(
+        (fixture) =>
+          fixture.round === values.round && fixture.userId === selectedUser
       );
 
       const valuesForSubmit = !!existingRound
@@ -84,43 +64,159 @@ export function Index() {
     }
     createOrUpdateUser()
       .then(() => {
-        fetchData(selectedUser)
+        toast({
+          title: 'Result saved.',
+          description: '',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+
+        fetchData()
           .then((data) => {
-            setFixtures(data.userFixtures);
+            setAllUsersFixtures(data.allUserFixtures);
           })
-          .catch((err) => console.error(err));
+          .catch((err) => {
+            console.error(err);
+          });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: 'Result not saved.',
+          description: 'Something happen. Try again.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+  };
+
+  const handleMultipleSubmit = (values) => {
+    async function createOrUpdateFixtures(updateData, data) {
+      const fixturesData: any[] = updateData
+        ? await updater('/api/fixtures/update', data)
+        : await poster('/api/fixtures/create', data);
+      return { fixtures: fixturesData };
+    }
+
+    let valuesToSubmit = [];
+    Object.keys(values).map((userId) => {
+      const userResults = values[userId] !== {} ? values[userId] : null;
+      const existingRound = allUsersFixtures?.find(
+        (fixture) =>
+          fixture.round === userResults.round && fixture.userId === userId
+      );
+      if (!!existingRound) {
+        userResults.fixtureId = existingRound.fixtureId;
+
+        if (
+          existingRound.homeScore !== userResults.homeScore ||
+          existingRound.awayScore !== userResults.awayScore
+        ) {
+          userResults.shouldUpdate = true;
+        }
+      }
+      valuesToSubmit.push(userResults);
+    });
+
+    let valuesToUpdate = [];
+    let valuesToCreate = [];
+
+    valuesToSubmit.map((value) => {
+      if (value.fixtureId) {
+        if (value.shouldUpdate) {
+          valuesToUpdate.push(value);
+        }
+      } else {
+        valuesToCreate.push(value);
+      }
+    });
+
+    if (valuesToUpdate && valuesToUpdate.length > 0) {
+      createOrUpdateFixtures(true, valuesToUpdate)
+        .then(() => {
+          toast({
+            title: 'Results saved.',
+            description: '',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
+          fetchData()
+            .then((data) => {
+              setAllUsersFixtures(data.allUserFixtures);
+            })
+            .catch((err) => console.error(err));
+          fetchUserData(selectedUser)
+            .then((data) => {
+              setUserFixtures(data.userFixtures);
+            })
+            .catch((err) => console.error(err));
+        })
+        .catch((err) => {
+          console.error(err);
+          toast({
+            title: 'Result not saved.',
+            description: 'Something happen. Try again.',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+        });
+    }
+
+    if (valuesToCreate && valuesToCreate.length > 0) {
+      createOrUpdateFixtures(false, valuesToCreate)
+        .then(() => {
+          toast({
+            title: 'Results saved.',
+            description: 'Something happen. Try again.',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
+
+          fetchData()
+            .then((data) => {
+              setAllUsersFixtures(data.allUserFixtures);
+            })
+            .catch((err) => console.error(err));
+        })
+        .catch((err) => {
+          console.error(err);
+          toast({
+            title: 'Result not saved.',
+            description: 'Something happen. Try again.',
+            status: 'error',
+            duration: 3000,
+            isClosable: true,
+          });
+        });
+    }
   };
 
   return (
     <Container>
-      <Stack spacing={4} my={8} direction={isSmallScreen ? 'column' : 'row'}>
-        <Flex flexDirection="column" width={isSmallScreen ? '100%' : '70%'}>
-          {users && users.length > 0 && (
-            <Select
-              placeholder="Select user"
-              mb={4}
-              borderRadius={4}
-              onChange={(event) => setSelectedUser(event.target.value)}
-              defaultValue={users[0].id}
-            >
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-          )}
-          <Box>
-            {userFixturesMapped ? (
-              <Rounds rounds={userFixturesMapped} onSubmit={handleSubmit} />
-            ) : null}
-          </Box>
-        </Flex>
-        <Box width={isSmallScreen ? '100%' : '30%'}>
-          <Leaderboard leaderboard={leaderBoard} />
-        </Box>
+      <Flex flexDirection="row" my={2} justifyContent="flex-end">
+        <Button mr={5} isActive={!roundsView} onClick={setRoundsView.off}>
+          View by User
+        </Button>
+        <Button isActive={roundsView} onClick={setRoundsView.on}>
+          View by Round number
+        </Button>
+      </Flex>
+      <Stack spacing={0} my={8} direction={isSmallScreen ? 'column' : 'row'}>
+        {roundsView ? (
+          <RoundViewLayout onSubmit={handleSubmit} />
+        ) : (
+          <UserViewLayout onSubmit={handleMultipleSubmit} />
+        )}
+        {/*{!isSmallScreen && (*/}
+        {/*  <Box width={isSmallScreen ? '100%' : '30%'}>*/}
+        {/*    <Leaderboard leaderboard={leaderBoard} />*/}
+        {/*  </Box>*/}
+        {/*)}*/}
       </Stack>
     </Container>
   );

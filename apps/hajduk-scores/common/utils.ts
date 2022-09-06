@@ -50,20 +50,43 @@ export const useControlNavbar = () => {
 
 export const findObjectByNearestDate = (array, targetDate) => {
   const diffDate = new Date(targetDate);
-  const sortedArray = array
-    .sort(function (a, b) {
-      // Turn your strings into dates, and then subtract them
-      // to get a value that is either negative, positive, or zero.
+  const sortedArray =
+    array &&
+    array
+      .sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
 
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      const distancea = Math.abs(diffDate - dateA);
-      const distanceb = Math.abs(diffDate - dateB);
-      return distancea - distanceb; // sort a before b when the distance is smaller
-    })
-    .filter(function (d) {
-      const date = new Date(d.date);
-      return date - diffDate >= 0;
-    });
-  return sortedArray[0];
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        const distancea = Math.abs(diffDate - dateA);
+        const distanceb = Math.abs(diffDate - dateB);
+        return distancea - distanceb; // sort a before b when the distance is smaller
+      })
+      .filter(function (d) {
+        const date = new Date(d?.date);
+        return date - diffDate >= 0;
+      });
+  return sortedArray && sortedArray[0];
+};
+
+export const findClosestRoundByDate = (rounds) => {
+  const today = new Date();
+  const fixtures = rounds?.map((round) => round.fixture);
+  const closestFixtureByDate = findObjectByNearestDate(fixtures, today);
+  return rounds?.findIndex(
+    (round) => round?.fixture?.id === closestFixtureByDate?.id
+  );
+};
+
+export const calculateTip = (home, away) => {
+  if (home === away) {
+    return '0';
+  }
+  if (home > away) {
+    return '1';
+  }
+  if (home < away) {
+    return '2';
+  }
 };
