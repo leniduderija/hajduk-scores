@@ -1,18 +1,22 @@
-import { Box, Flex, Select, useMediaQuery } from '@chakra-ui/react';
+import { Box, Flex, Select } from '@chakra-ui/react';
 import Rounds from '../rounds/Rounds';
-import theme from '../../common/theme';
 import { useContextState } from '../../common/context/state-context';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useWindowScrollPositions } from '../../common/utils';
 
 export interface RoundViewLayoutProps {
   onSubmit: (values) => void;
 }
 
 export function RoundViewLayout({ onSubmit }: RoundViewLayoutProps) {
-  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-
   const { rounds, users, selectedUser, setSelectedUser, userFixtures } =
     useContextState();
+
+  const usersSelectRef = useRef(null);
+  const { scrollY } = useWindowScrollPositions();
+  // const { show } = useControlNavbar();
+  const scrolled = scrollY > usersSelectRef?.current?.clientHeight / 2;
+  console.debug('scrolled 2', scrolled, scrollY);
 
   const [userFixturesMapped, setUserFixturesMapped] = useState<any[]>(null);
 
@@ -29,23 +33,37 @@ export function RoundViewLayout({ onSubmit }: RoundViewLayoutProps) {
     }
   }, [userFixtures, selectedUser, rounds]);
 
+  console.debug('scrolled ', scrolled, scrollY);
+
   return (
     <>
-      <Flex flexDirection="column" width={isSmallScreen ? '100%' : '100%'}>
+      <Flex flexDirection="column" width="100%">
         {users && users.length > 0 && (
-          <Select
-            placeholder="Select user"
-            mb={4}
-            borderRadius={4}
-            onChange={(event) => setSelectedUser(event.target.value)}
-            defaultValue={users[0].id}
+          <Box
+            ref={usersSelectRef}
+            position={scrolled ? 'sticky' : 'relative'}
+            boxShadow={scrolled ? '0px 10px 25px rgba(0, 0, 0, 0.05)' : 'none'}
+            top={0}
+            left={0}
+            zIndex={1}
           >
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.name}
-              </option>
-            ))}
-          </Select>
+            <Select
+              placeholder="Select user"
+              mb={4}
+              borderRadius={4}
+              onChange={(event) => setSelectedUser(event.target.value)}
+              defaultValue={users[0].id}
+              backgroundColor="#fff"
+              maxWidth="65%"
+              margin={scrolled && 0}
+            >
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </Select>
+          </Box>
         )}
         <Box>
           {userFixturesMapped ? (

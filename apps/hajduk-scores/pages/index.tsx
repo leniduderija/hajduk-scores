@@ -34,7 +34,7 @@ export function Index() {
 
   const {
     selectedUser,
-    leaderBoard,
+    // leaderBoard,
     allUsersFixtures,
     setAllUsersFixtures,
     setUserFixtures,
@@ -47,7 +47,7 @@ export function Index() {
           fixture.round === values.round && fixture.userId === selectedUser
       );
 
-      const valuesForSubmit = !!existingRound
+      const valuesForSubmit = existingRound
         ? {
             ...values,
             fixtureId: existingRound.fixtureId,
@@ -57,10 +57,10 @@ export function Index() {
             ...values,
             userId: selectedUser,
           };
-      const usersData: any[] = !!existingRound
+      const fixtureData = existingRound
         ? await updater('/api/fixture/update', valuesForSubmit)
         : await poster('/api/fixture/create', valuesForSubmit);
-      return { users: usersData };
+      return { fixture: fixtureData };
     }
     createOrUpdateUser()
       .then(() => {
@@ -94,20 +94,20 @@ export function Index() {
 
   const handleMultipleSubmit = (values) => {
     async function createOrUpdateFixtures(updateData, data) {
-      const fixturesData: any[] = updateData
+      const fixturesData = updateData
         ? await updater('/api/fixtures/update', data)
         : await poster('/api/fixtures/create', data);
       return { fixtures: fixturesData };
     }
 
-    let valuesToSubmit = [];
+    const valuesToSubmit = [];
     Object.keys(values).map((userId) => {
       const userResults = values[userId] !== {} ? values[userId] : null;
       const existingRound = allUsersFixtures?.find(
         (fixture) =>
           fixture.round === userResults.round && fixture.userId === userId
       );
-      if (!!existingRound) {
+      if (existingRound) {
         userResults.fixtureId = existingRound.fixtureId;
 
         if (
@@ -120,8 +120,8 @@ export function Index() {
       valuesToSubmit.push(userResults);
     });
 
-    let valuesToUpdate = [];
-    let valuesToCreate = [];
+    const valuesToUpdate = [];
+    const valuesToCreate = [];
 
     valuesToSubmit.map((value) => {
       if (value.fixtureId) {
@@ -198,8 +198,18 @@ export function Index() {
 
   return (
     <Container>
-      <Flex flexDirection="row" my={2} justifyContent="flex-end">
-        <Button mr={5} isActive={!roundsView} onClick={setRoundsView.off}>
+      <Flex
+        flexDirection={isSmallScreen ? 'column' : 'row'}
+        my={2}
+        justifyContent="flex-end"
+      >
+        <Button
+          width={isSmallScreen ? '100%' : 'auto'}
+          mr={5}
+          isActive={!roundsView}
+          onClick={setRoundsView.off}
+          mb={2}
+        >
           View by User
         </Button>
         <Button isActive={roundsView} onClick={setRoundsView.on}>

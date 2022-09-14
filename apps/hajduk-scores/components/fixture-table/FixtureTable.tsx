@@ -6,11 +6,13 @@ import {
   Spinner,
   Image,
   Button,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { hajdukId } from '../../common/services/matches-service';
 import { useEffect, useState } from 'react';
 import { Short, Team } from '@hajduk-scores/api-interfaces';
 import { calculateTip } from '../../common/utils';
+import theme from '../../common/theme';
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -27,6 +29,8 @@ export function FixtureTable({
   round: any;
   onSubmit: (values: any) => void;
 }) {
+  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+
   const { fixture, teams, score, homeScore, awayScore, tip } = round;
 
   const [homeGoals, setHomeGoals] = useState<number | null>(homeScore);
@@ -59,8 +63,18 @@ export function FixtureTable({
 
   return round ? (
     <Flex flexDirection="column">
-      <Flex flexDirection="row" alignItems="center" mb={4}>
-        <Flex flexDirection="row" mr={2} alignItems="center">
+      <Flex
+        flexDirection={isSmallScreen ? 'column' : 'row'}
+        alignItems={isSmallScreen ? 'flex-start' : 'center'}
+        mb={4}
+      >
+        <Flex
+          flexDirection="row"
+          mr={2}
+          alignItems="center"
+          mb={isSmallScreen ? 8 : 0}
+          width={isSmallScreen ? '100%' : 'auto'}
+        >
           <Flex
             flexDirection="row"
             alignItems="center"
@@ -85,21 +99,29 @@ export function FixtureTable({
             disabled={fixture.status.short === Short.Ft}
           />
         </Flex>
-        <Box mx={4}>:</Box>
-        <Flex flexDirection="row" alignItems="center">
-          <StyledInput
-            variant="flushed"
-            type="number"
-            min={0}
-            value={awayGoals}
-            onChange={(e) => setAwayGoals(parseInt(e.target.value))}
-            disabled={fixture.status.short === Short.Ft}
-          />
+        {!isSmallScreen && <Box mx={4}>:</Box>}
+        <Flex
+          flexDirection="row"
+          alignItems={isSmallScreen ? 'flex-start' : 'center'}
+          justifyContent={isSmallScreen ? 'space-between' : 'center'}
+          width={isSmallScreen ? '100%' : 'auto'}
+        >
+          {!isSmallScreen && (
+            <StyledInput
+              variant="flushed"
+              type="number"
+              min={0}
+              value={awayGoals}
+              onChange={(e) => setAwayGoals(parseInt(e.target.value))}
+              disabled={fixture.status.short === Short.Ft}
+            />
+          )}
           <Flex
             flexDirection="row"
             alignItems="center"
             fontSize="16px"
-            ml={2}
+            ml={isSmallScreen ? 0 : 2}
+            mr={isSmallScreen ? 2 : 0}
             fontWeight={!hajdukIsHomeTeam ? 'bold' : 'normal'}
           >
             <Image
@@ -110,6 +132,16 @@ export function FixtureTable({
             />
             <Box ml={2}>{(teams.away as Team).name}</Box>
           </Flex>
+          {isSmallScreen && (
+            <StyledInput
+              variant="flushed"
+              type="number"
+              min={0}
+              value={awayGoals}
+              onChange={(e) => setAwayGoals(parseInt(e.target.value))}
+              disabled={fixture.status.short === Short.Ft}
+            />
+          )}
         </Flex>
       </Flex>
       <Flex flexDirection="row" alignItems="center" my={4}>

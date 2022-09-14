@@ -1,7 +1,16 @@
-import { Box, chakra, Flex, Input, Spinner, Text } from '@chakra-ui/react';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  Box,
+  chakra,
+  Flex,
+  Input,
+  Spinner,
+  Text,
+  useMediaQuery,
+} from '@chakra-ui/react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Short, User } from '@hajduk-scores/api-interfaces';
 import { calculateTip } from '../../common/utils';
+import theme from '../../common/theme';
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -38,6 +47,8 @@ export function AllUsersFixtureTable({
     userId: string;
   }) => void;
 }) {
+  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+
   const [homeGoals, setHomeGoals] = useState<number | null>(null);
   const [awayGoals, setAwayGoals] = useState<number | null>(null);
 
@@ -65,15 +76,18 @@ export function AllUsersFixtureTable({
 
   return round ? (
     <Flex
-      flexDirection="row"
+      flexDirection={isSmallScreen ? 'column' : 'row'}
       justifyContent="space-between"
-      my={2}
+      my={isSmallScreen ? 4 : 2}
       width="100%"
     >
       <Flex mr={2} alignItems="center">
-        <Text fontSize="12px">{user.name}</Text>
+        <Text fontSize={isSmallScreen ? '16px' : '12px'}>{user.name}</Text>
       </Flex>
-      <Flex flexDirection="row" alignItems="center">
+      <Flex
+        flexDirection={isSmallScreen ? 'column' : 'row'}
+        alignItems={isSmallScreen ? 'flex-start' : 'center'}
+      >
         <Flex flexDirection="row" alignItems="center" mb={4}>
           <Flex
             flexDirection="row"
@@ -133,10 +147,15 @@ export function AllUsersFixtureTable({
         <Flex
           flexDirection="row"
           alignItems="center"
-          ml={4}
+          ml={isSmallScreen ? 1 : 4}
           justifyContent="flex-end"
         >
-          <Box fontWeight="bold" ml={8} mr={2} fontSize="14px">
+          <Box
+            fontWeight="bold"
+            ml={isSmallScreen ? 2 : 8}
+            mr={2}
+            fontSize="14px"
+          >
             TIP
           </Box>
           <StyledInput disabled value={tipValue || round.tip || 'Not Set'} />

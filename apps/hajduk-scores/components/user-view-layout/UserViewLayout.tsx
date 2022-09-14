@@ -20,6 +20,7 @@ export interface UserViewLayoutProps {
 }
 
 const CurrentRound = ({ round }) => {
+  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const { fixture, teams, score } = round;
   const hajdukIsHomeTeam = (teams?.home as Team)?.id === hajdukId;
 
@@ -29,7 +30,7 @@ const CurrentRound = ({ round }) => {
         flexDirection="row"
         justifyContent="space-between"
         my={5}
-        width="80%"
+        width={isSmallScreen ? '100%' : '80%'}
       >
         <Flex
           flexDirection="row"
@@ -74,6 +75,7 @@ const CurrentRound = ({ round }) => {
             flexDirection="row"
             justifyContent="space-between"
             mx={4}
+            alignItems="center"
           >
             {' '}
             -{' '}
@@ -118,7 +120,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
   );
 
   const [selectedRound, setSelectedRound] = useState<number | null>(null);
-  const [userFixturesMapped, setUserFixturesMapped] = useState<{}>(null);
+  const [userFixturesMapped, setUserFixturesMapped] = useState(null);
   const [currentRoundData, setCurrentRoundData] = useState<FixtureData>(null);
 
   const [results, setResults] = useState({});
@@ -192,7 +194,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
 
   return (
     <>
-      <Flex flexDirection="column" width={isSmallScreen ? '100%' : '100%'}>
+      <Box flexDirection="column" width={isSmallScreen ? '100%' : '100%'}>
         <Flex flexDirection="column">
           <Box width="100px">
             {selectedRound && (
@@ -241,7 +243,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
             </Flex>
           ) : null}
         </Box>
-      </Flex>
+      </Box>
     </>
   );
 }

@@ -9,7 +9,6 @@ import React, {
 import { ApiFixture, FixtureData, User } from '@hajduk-scores/api-interfaces';
 import matchesService from '../services/matches-service';
 import { fetcher } from '../http/http-client';
-import { findClosestRoundByDate } from '../utils';
 
 interface StateProviderProps {
   children: ReactNode;
@@ -25,10 +24,9 @@ type State = {
     totalUserPoints: number;
   }[];
   selectedUser: string;
-  setSelectedUser: (value) => void;
-  setUserFixtures: (value) => void;
-  setAllUsersFixtures: (value) => void;
-  onRefreshFixtureData: () => void;
+  setSelectedUser: (value: string) => void;
+  setUserFixtures: (value: ApiFixture[]) => void;
+  setAllUsersFixtures: (value: ApiFixture[]) => void;
 };
 
 const StateContext = createContext<State>({
@@ -41,8 +39,13 @@ const StateContext = createContext<State>({
   setSelectedUser: () => ({}),
   setUserFixtures: () => ({}),
   setAllUsersFixtures: () => ({}),
-  onRefreshFixtureData: () => ({}),
 });
+
+async function fetchFullData() {
+  const usersData: User[] = await fetcher('/api/users');
+  const fixturesData: ApiFixture[] = await fetcher('/api/fixtures');
+  return { users: usersData, allUsersFixtures: fixturesData };
+}
 
 export const StateProvider = ({ children }: StateProviderProps) => {
   const [rounds, setRounds] = useState<FixtureData[] | null>(null);
@@ -61,11 +64,6 @@ export const StateProvider = ({ children }: StateProviderProps) => {
         console.error('ERROR! Failed to fetch rounds: ', error);
       });
 
-    async function fetchFullData() {
-      const usersData: User[] = await fetcher('/api/users');
-      const fixturesData: ApiFixture[] = await fetcher('/api/fixtures');
-      return { users: usersData, allUsersFixtures: fixturesData };
-    }
     fetchFullData()
       .then((data) => {
         setUsers(data.users);
@@ -92,20 +90,18 @@ export const StateProvider = ({ children }: StateProviderProps) => {
     }
   }, [selectedUser]);
 
-  const currentRoundIndex = useMemo(
-    () => findClosestRoundByDate(rounds),
-    [rounds]
-  );
+  // const currentRoundIndex = useMemo(
+  //   () => findClosestRoundByDate(rounds),
+  //   [rounds]
+  // );
 
   const leaderBoardScores = useMemo(() => {
     const usersMap = {};
     allUsersFixtures?.map((fixture) => {
-      if (fixture.round <= currentRoundIndex + 1) {
-        if (usersMap[fixture.userId]) {
-          usersMap[fixture.userId].push(fixture);
-        } else {
-          usersMap[fixture.userId] = [fixture];
-        }
+      if (usersMap[fixture.userId]) {
+        usersMap[fixture.userId].push(fixture);
+      } else {
+        usersMap[fixture.userId] = [fixture];
       }
     });
     const leaderBoardArray = Object.keys(usersMap).map((key) => {

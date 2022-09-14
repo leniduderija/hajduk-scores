@@ -12,7 +12,7 @@ export const Leaderboard = ({ leaderboard, hideTitle = false }) => (
     {!hideTitle && <Text fontSize="lg">LEADERBOARD:</Text>}
     <OrderedList mt={2}>
       {leaderboard?.map((leader, index) => (
-        <ListItem>
+        <ListItem key={leader.user.name}>
           <Flex flexDirection="row" alignItems="center">
             {leader.user.name} - {leader.totalUserPoints}
             {index === 0 && (

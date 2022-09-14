@@ -5,6 +5,7 @@ export const useWindowScrollPositions = () => {
 
   useEffect(() => {
     function updatePosition() {
+      console.debug('UPDATE POS ', window.scrollX, window.scrollY);
       setPosition({ scrollX: window.scrollX, scrollY: window.scrollY });
     }
 
@@ -49,7 +50,7 @@ export const useControlNavbar = () => {
 };
 
 export const findObjectByNearestDate = (array, targetDate) => {
-  const diffDate = new Date(targetDate);
+  const diffDate: number = new Date(targetDate).getTime();
   const sortedArray =
     array &&
     array
@@ -57,14 +58,14 @@ export const findObjectByNearestDate = (array, targetDate) => {
         // Turn your strings into dates, and then subtract them
         // to get a value that is either negative, positive, or zero.
 
-        const dateA = new Date(a.date);
-        const dateB = new Date(b.date);
-        const distancea = Math.abs(diffDate - dateA);
-        const distanceb = Math.abs(diffDate - dateB);
+        const dateA: number = new Date(a.date).getTime();
+        const dateB: number = new Date(b.date).getTime();
+        const distancea: number = Math.abs(diffDate - dateA);
+        const distanceb: number = Math.abs(diffDate - dateB);
         return distancea - distanceb; // sort a before b when the distance is smaller
       })
       .filter(function (d) {
-        const date = new Date(d?.date);
+        const date = new Date(d?.date).getTime();
         return date - diffDate >= 0;
       });
   return sortedArray && sortedArray[0];
