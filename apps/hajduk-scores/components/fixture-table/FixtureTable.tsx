@@ -26,7 +26,7 @@ const StyledInput = chakra(Input, {
 });
 
 export function FixtureTable({
-  round = {},
+  round,
   onSubmit,
 }: {
   round: UserFixtureMapped;

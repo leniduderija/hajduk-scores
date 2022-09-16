@@ -5,7 +5,6 @@ export const useWindowScrollPositions = () => {
 
   useEffect(() => {
     function updatePosition() {
-      console.debug('UPDATE POS ', window.scrollX, window.scrollY);
       setPosition({ scrollX: window.scrollX, scrollY: window.scrollY });
     }
 

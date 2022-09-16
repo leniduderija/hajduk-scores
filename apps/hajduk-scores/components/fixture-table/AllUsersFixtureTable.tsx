@@ -33,7 +33,7 @@ const Alert = chakra(Box, {
 });
 
 export function AllUsersFixtureTable({
-  round = {},
+  round,
   user = null,
   onUpdateGoals,
 }: {
