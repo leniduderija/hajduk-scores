@@ -1,6 +1,7 @@
 import AllUsersFixtureTable from '../fixture-table/AllUsersFixtureTable';
 import { User } from '@hajduk-scores/api-interfaces';
 import { useEffect, useState } from 'react';
+import { UserFixtureMapped } from '../round-view-layout/RoundViewLayout';
 
 export function UserRounds({
   rounds,
@@ -9,7 +10,7 @@ export function UserRounds({
   selectedRound,
   onUpdateGoals,
 }: {
-  rounds: any[];
+  rounds: UserFixtureMapped[];
   users: User[];
   userId: string;
   selectedRound: number;

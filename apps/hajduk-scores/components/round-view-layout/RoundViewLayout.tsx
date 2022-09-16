@@ -3,9 +3,17 @@ import Rounds from '../rounds/Rounds';
 import { useContextState } from '../../common/context/state-context';
 import { useEffect, useRef, useState } from 'react';
 import { useWindowScrollPositions } from '../../common/utils';
+import { ApiFixture, FixtureData } from '@hajduk-scores/api-interfaces';
+import { FixtureToSubmit } from '../fixture-table/FixtureTable';
 
 export interface RoundViewLayoutProps {
   onSubmit: (values) => void;
+}
+
+export type UserFixtureMapped = FixtureData & ApiFixture;
+
+export interface RoundViewLayoutProps {
+  onSubmit: (values: FixtureToSubmit) => void;
 }
 
 export function RoundViewLayout({ onSubmit }: RoundViewLayoutProps) {
@@ -14,11 +22,10 @@ export function RoundViewLayout({ onSubmit }: RoundViewLayoutProps) {
 
   const usersSelectRef = useRef(null);
   const { scrollY } = useWindowScrollPositions();
-  // const { show } = useControlNavbar();
   const scrolled = scrollY > usersSelectRef?.current?.clientHeight / 2;
-  console.debug('scrolled 2', scrolled, scrollY);
 
-  const [userFixturesMapped, setUserFixturesMapped] = useState<any[]>(null);
+  const [userFixturesMapped, setUserFixturesMapped] =
+    useState<UserFixtureMapped[]>(null);
 
   useEffect(() => {
     if (userFixtures && selectedUser) {
@@ -32,8 +39,6 @@ export function RoundViewLayout({ onSubmit }: RoundViewLayoutProps) {
       setUserFixturesMapped(mappedRoundsByUser);
     }
   }, [userFixtures, selectedUser, rounds]);
-
-  console.debug('scrolled ', scrolled, scrollY);
 
   return (
     <>

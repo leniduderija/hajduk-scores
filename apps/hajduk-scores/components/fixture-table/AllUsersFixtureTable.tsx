@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   chakra,
@@ -11,6 +12,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Short, User } from '@hajduk-scores/api-interfaces';
 import { calculateTip } from '../../common/utils';
 import theme from '../../common/theme';
+import { UserFixtureMapped } from '../round-view-layout/RoundViewLayout';
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -35,7 +37,7 @@ export function AllUsersFixtureTable({
   user = null,
   onUpdateGoals,
 }: {
-  round: any;
+  round: UserFixtureMapped;
   user: User;
   onUpdateGoals: ({
     home,
@@ -70,7 +72,7 @@ export function AllUsersFixtureTable({
 
   useEffect(() => {
     onUpdateGoals({ home: homeGoals, away: awayGoals, userId: user.id });
-  }, [homeGoals, awayGoals]);
+  }, [homeGoals, awayGoals, user.id]);
 
   if (!round) return null;
 

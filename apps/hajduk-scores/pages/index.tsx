@@ -14,6 +14,7 @@ import { useContextState } from '../common/context/state-context';
 // import { Leaderboard } from '../components/leaderboard/Leaderboard';
 import RoundViewLayout from '../components/round-view-layout/RoundViewLayout';
 import UserViewLayout from '../components/user-view-layout/UserViewLayout';
+import { FixtureToSubmit } from '../components/fixture-table/FixtureTable';
 
 async function fetchData() {
   const fixturesData: ApiFixture[] = await fetcher('/api/fixtures');
@@ -40,7 +41,7 @@ export function Index() {
     setUserFixtures,
   } = useContextState();
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values: FixtureToSubmit) => {
     async function createOrUpdateUser() {
       const existingRound = allUsersFixtures?.find(
         (fixture) =>

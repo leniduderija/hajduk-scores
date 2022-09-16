@@ -1,30 +1,24 @@
 /* eslint-disable import/no-anonymous-default-export */
 import httpClient from '../http/http-client';
-import {
-  FixtureData,
-  RapidApiFixturesResponse,
-  // FixturesByRound,
-  // League,
-  // RoundsInterface
-} from '@hajduk-scores/api-interfaces';
+import { RapidApiFixturesResponse } from '@hajduk-scores/api-interfaces';
 
-const croatianLeagueIdSofa = 170;
+// const croatianLeagueIdSofa = 170;
 const croatianLeagueId = 210;
-const season2022Id = 42138;
-export const hajdukIdSofa = 2036;
+// const season2022Id = 42138;
+// export const hajdukIdSofa = 2036;
 export const hajdukId = 608;
-const uefaConferenceLeagueId = 848;
+// const uefaConferenceLeagueId = 848;
 
-const getCroatianLeagues = (): Promise<any> => {
-  return httpClient
-    .get(`leagues`, { params: { code: 'hr' } })
-    .then((response) => response.data);
-};
-const getHajdukData = (): Promise<any> => {
-  return httpClient
-    .get(`teams`, { params: { id: hajdukId } })
-    .then((response) => response.data);
-};
+// const getCroatianLeagues = (): Promise<any> => {
+//   return httpClient
+//     .get(`leagues`, { params: { code: 'hr' } })
+//     .then((response) => response.data);
+// };
+// const getHajdukData = (): Promise<any> => {
+//   return httpClient
+//     .get(`teams`, { params: { id: hajdukId } })
+//     .then((response) => response.data);
+// };
 const getHajdukFixtures = (): Promise<RapidApiFixturesResponse> => {
   return httpClient
     .get('fixtures', {
@@ -32,17 +26,17 @@ const getHajdukFixtures = (): Promise<RapidApiFixturesResponse> => {
     })
     .then((response) => response.data);
 };
-const getLineupsForFixture = ({ fixtureNumber, teamId }): Promise<any> => {
-  return httpClient
-    .get('fixtures/lineups', {
-      params: { fixture: fixtureNumber, team: teamId },
-    })
-    .then((response) => response.data);
-};
+// const getLineupsForFixture = ({ fixtureNumber, teamId }): Promise<any> => {
+//   return httpClient
+//     .get('fixtures/lineups', {
+//       params: { fixture: fixtureNumber, team: teamId },
+//     })
+//     .then((response) => response.data);
+// };
 
 export default {
-  getCroatianLeagues,
-  getHajdukData,
+  // getCroatianLeagues,
+  // getHajdukData,
   getHajdukFixtures,
-  getLineupsForFixture,
+  // getLineupsForFixture,
 };

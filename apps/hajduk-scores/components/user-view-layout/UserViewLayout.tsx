@@ -14,6 +14,7 @@ import { calculateTip, findClosestRoundByDate } from '../../common/utils';
 import { FixtureData, Short, Team } from '@hajduk-scores/api-interfaces';
 import { hajdukId } from '../../common/services/matches-service';
 import UserRounds from '../user-rounds/UserRounds';
+import { UserFixtureMapped } from '../round-view-layout/RoundViewLayout';
 
 export interface UserViewLayoutProps {
   onSubmit: (values) => void;
@@ -120,7 +121,9 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
   );
 
   const [selectedRound, setSelectedRound] = useState<number | null>(null);
-  const [userFixturesMapped, setUserFixturesMapped] = useState(null);
+  const [userFixturesMapped, setUserFixturesMapped] = useState<{
+    [key: string]: UserFixtureMapped[];
+  }>(null);
   const [currentRoundData, setCurrentRoundData] = useState<FixtureData>(null);
 
   const [results, setResults] = useState({});
@@ -152,7 +155,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
       });
       setUserFixturesMapped(roundsMapped);
     }
-  }, [allUsersFixtures, rounds]);
+  }, [allUsersFixtures, rounds, users]);
 
   useEffect(() => {
     if (rounds && selectedRound) {
@@ -174,7 +177,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
       newResults[fixture.userId] = fixture;
     });
     setResults(newResults);
-  }, [allUsersFixtures, selectedRound]);
+  }, [allUsersFixtures, selectedRound, results]);
 
   const handleUpdateGoals = ({ home, away, userId }) => {
     if ((home || home === 0) && (away || away === 0)) {
@@ -196,7 +199,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
     <>
       <Box flexDirection="column" width={isSmallScreen ? '100%' : '100%'}>
         <Flex flexDirection="column">
-          <Box width="100px">
+          <Box width="120px">
             {selectedRound && (
               <Select
                 placeholder="Select round"

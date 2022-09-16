@@ -6,15 +6,16 @@ import {
   AccordionPanel,
   Box,
 } from '@chakra-ui/react';
-import FixtureTable from '../fixture-table/FixtureTable';
+import FixtureTable, { FixtureToSubmit } from '../fixture-table/FixtureTable';
 import { findClosestRoundByDate } from '../../common/utils';
+import { UserFixtureMapped } from '../round-view-layout/RoundViewLayout';
 
 export function Rounds({
   rounds,
   onSubmit,
 }: {
-  rounds: any[];
-  onSubmit: (values) => void;
+  rounds: UserFixtureMapped[];
+  onSubmit: (values: FixtureToSubmit) => void;
 }) {
   const currentRound = findClosestRoundByDate(rounds);
 

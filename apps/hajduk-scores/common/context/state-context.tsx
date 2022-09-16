@@ -144,7 +144,7 @@ export const StateProvider = ({ children }: StateProviderProps) => {
     return leaderBoardArray.sort(
       (a, b) => b.totalUserPoints - a.totalUserPoints
     );
-  }, [allUsersFixtures]);
+  }, [allUsersFixtures, users, rounds]);
 
   const refreshFixtureData = () => {
     async function fetchData() {

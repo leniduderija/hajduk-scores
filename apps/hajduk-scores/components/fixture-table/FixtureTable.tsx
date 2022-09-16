@@ -10,9 +10,12 @@ import {
 } from '@chakra-ui/react';
 import { hajdukId } from '../../common/services/matches-service';
 import { useEffect, useState } from 'react';
-import { Short, Team } from '@hajduk-scores/api-interfaces';
+import { ApiFixture, Short, Team } from '@hajduk-scores/api-interfaces';
 import { calculateTip } from '../../common/utils';
 import theme from '../../common/theme';
+import { UserFixtureMapped } from '../round-view-layout/RoundViewLayout';
+
+export type FixtureToSubmit = Omit<ApiFixture, 'fixtureId' | 'user' | 'userId'>;
 
 const StyledInput = chakra(Input, {
   baseStyle: {
@@ -26,8 +29,8 @@ export function FixtureTable({
   round = {},
   onSubmit,
 }: {
-  round: any;
-  onSubmit: (values: any) => void;
+  round: UserFixtureMapped;
+  onSubmit: (values: FixtureToSubmit) => void;
 }) {
   const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
@@ -47,7 +50,7 @@ export function FixtureTable({
 
   const handleSubmit = () => {
     const fixtureNumber = parseInt(round.league.round.split(' ')[3]);
-    const fixture = {
+    const fixture: FixtureToSubmit = {
       homeScore: homeGoals,
       awayScore: awayGoals,
       round: fixtureNumber,

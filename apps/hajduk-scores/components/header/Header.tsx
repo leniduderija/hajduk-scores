@@ -1,6 +1,5 @@
-import { Container, Box, chakra, useMediaQuery } from '@chakra-ui/react';
+import { Container, Box, chakra } from '@chakra-ui/react';
 import Logo from '../logo/Logo';
-import theme from '../../common/theme';
 import { Leaderboard } from '../leaderboard/Leaderboard';
 import { useContextState } from '../../common/context/state-context';
 
@@ -28,17 +27,14 @@ const MobileLeaderboard = chakra(Box, {
 });
 
 export function Header() {
-  const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const { leaderBoard } = useContextState();
   return (
     <HeaderContainer>
       <Container>
         <Logo />
-        {true && (
-          <MobileLeaderboard>
-            <Leaderboard hideTitle={true} leaderboard={leaderBoard} />
-          </MobileLeaderboard>
-        )}
+        <MobileLeaderboard>
+          <Leaderboard hideTitle={true} leaderboard={leaderBoard} />
+        </MobileLeaderboard>
       </Container>
     </HeaderContainer>
   );
