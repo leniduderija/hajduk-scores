@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {
   Box,
@@ -177,7 +178,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
       newResults[fixture.userId] = fixture;
     });
     setResults(newResults);
-  }, [allUsersFixtures, selectedRound, results]);
+  }, [allUsersFixtures, selectedRound]);
 
   const handleUpdateGoals = ({ home, away, userId }) => {
     if ((home || home === 0) && (away || away === 0)) {
