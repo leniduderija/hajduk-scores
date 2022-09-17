@@ -6,7 +6,7 @@ export default async function handle(req, res) {
 
   const fixtures: Omit<ApiFixture, 'user'>[] = await prisma.fixture.findMany({
     where: {
-      userId: fid,
+      userId: parseInt(fid),
     },
   });
   res.json(fixtures);
