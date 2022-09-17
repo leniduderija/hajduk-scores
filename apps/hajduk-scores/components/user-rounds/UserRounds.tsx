@@ -12,7 +12,7 @@ export function UserRounds({
 }: {
   rounds: UserFixtureMapped[];
   users: User[];
-  userId: string;
+  userId: number;
   selectedRound: number;
   onUpdateGoals: ({
     home,
@@ -21,7 +21,7 @@ export function UserRounds({
   }: {
     home: number;
     away: number;
-    userId: string;
+    userId: number;
   }) => void;
 }) {
   const userData = users.find((user) => user.id === userId);

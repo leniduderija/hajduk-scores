@@ -46,7 +46,7 @@ export function AllUsersFixtureTable({
   }: {
     home: number;
     away: number;
-    userId: string;
+    userId: number;
   }) => void;
 }) {
   const [isSmallScreen] = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);

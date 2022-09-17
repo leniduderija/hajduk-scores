@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
   createdAt: Date;
@@ -12,7 +12,7 @@ export interface ApiFixture {
   round: number;
   tip: number;
   user: User;
-  userId: string;
+  userId: number;
   homeScore: number;
   awayScore: number;
 }
