@@ -13,5 +13,5 @@ export const environment = {
   rapidApiFootballHost: 'api-football-v1.p.rapidapi.com',
   rapidApiFootballBaseUrl: 'https://api-football-v1.p.rapidapi.com/v3/',
   herokuPostgresUrl:
-    'postgres://crqpgbgwxiiirb:942e54c08a07e0167b5e936dd28f5c44962cf990e578d27662e97679290c5d83@ec2-34-253-119-24.eu-west-1.compute.amazonaws.com:5432/dfpbm30reqsbt5',
+    'postgres://hljeblmsqzivio:6fe75f0b89b9388cf5bcf59f00590b501623ea92c1e52fa26c35ff58318ea2eb@ec2-176-34-215-248.eu-west-1.compute.amazonaws.com:5432/d54khfs4ru8n8n',
 };
