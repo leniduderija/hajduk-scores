@@ -25,6 +25,7 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "build": "npx next build",
+    "prisma": "npx prisma",
     "prisma init": "npx prisma init",
     "prisma generate": "npx prisma generate",
     "prisma push": "npx prisma db push"
