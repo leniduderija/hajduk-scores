@@ -9,22 +9,18 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String
-  email     String    @unique
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  name     String
   fixtures  Fixture[]
-
-  @@map("users")
 }
 
 model Fixture {
-  tip       Int
-  homeScore Int    @map("home_score")
-  awayScore Int    @map("away_score")
-  userId    String
-  fixtureId String @id @default(cuid())
+  fixtureId       Int     @id @default(autoincrement())
   round     Int
-  user      User   @relation(fields: [userId], references: [id])
+  tip       Int
+  homeScore Int
+  awayScore Int
+  userId Int?
+  user   User?   @relation(fields: [userId], references: [id])
 }
