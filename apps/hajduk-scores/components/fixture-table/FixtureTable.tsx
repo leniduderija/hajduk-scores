@@ -38,11 +38,11 @@ export function FixtureTable({
 
   const [homeGoals, setHomeGoals] = useState<number | null>(homeScore);
   const [awayGoals, setAwayGoals] = useState<number | null>(awayScore);
-  const [tipValue, setTipValue] = useState<string | null>(tip);
+  const [tipValue, setTipValue] = useState<number | null>(tip);
 
   useEffect(() => {
     if ((homeGoals || homeGoals === 0) && (awayGoals || awayGoals === 0)) {
-      setTipValue(calculateTip(homeGoals, awayGoals));
+      setTipValue(parseInt(calculateTip(homeGoals, awayGoals)));
     }
   }, [homeGoals, awayGoals]);
 
@@ -54,7 +54,7 @@ export function FixtureTable({
       homeScore: homeGoals,
       awayScore: awayGoals,
       round: fixtureNumber,
-      tip: parseInt(tipValue),
+      tip: tipValue,
     };
     onSubmit(fixture);
   };

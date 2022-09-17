@@ -6,10 +6,6 @@ import { useWindowScrollPositions } from '../../common/utils';
 import { ApiFixture, FixtureData } from '@hajduk-scores/api-interfaces';
 import { FixtureToSubmit } from '../fixture-table/FixtureTable';
 
-export interface RoundViewLayoutProps {
-  onSubmit: (values) => void;
-}
-
 export type UserFixtureMapped = FixtureData & ApiFixture;
 
 export interface RoundViewLayoutProps {
