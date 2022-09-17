@@ -52,7 +52,7 @@ export const StateProvider = ({ children }: StateProviderProps) => {
   const [users, setUsers] = useState<User[]>([]);
   const [allUsersFixtures, setAllUsersFixtures] = useState<ApiFixture[]>([]);
   const [userFixtures, setUserFixtures] = useState<ApiFixture[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string | null>();
+  const [selectedUser, setSelectedUser] = useState<number | null>();
 
   useEffect(() => {
     matchesService
