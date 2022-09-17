@@ -2,10 +2,7 @@
 import httpClient from '../http/http-client';
 import { RapidApiFixturesResponse } from '@hajduk-scores/api-interfaces';
 
-// const croatianLeagueIdSofa = 170;
 const croatianLeagueId = 210;
-// const season2022Id = 42138;
-// export const hajdukIdSofa = 2036;
 export const hajdukId = 608;
 // const uefaConferenceLeagueId = 848;
 
