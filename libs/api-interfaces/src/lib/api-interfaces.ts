@@ -8,7 +8,7 @@ export interface User {
 }
 
 export interface ApiFixture {
-  fixtureId: string;
+  fixtureId: number;
   round: number;
   tip: number;
   user: User;

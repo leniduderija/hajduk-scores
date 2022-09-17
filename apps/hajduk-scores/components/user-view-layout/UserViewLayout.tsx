@@ -233,7 +233,7 @@ export function UserViewLayout({ onSubmit }: UserViewLayoutProps) {
                   <UserRounds
                     rounds={userFixturesMapped[userId]}
                     users={users}
-                    userId={userId}
+                    userId={parseInt(userId)}
                     selectedRound={selectedRound}
                     onUpdateGoals={handleUpdateGoals}
                   />

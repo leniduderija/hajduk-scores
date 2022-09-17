@@ -106,7 +106,8 @@ export function Index() {
       const userResults = values[userId] !== {} ? values[userId] : null;
       const existingRound = allUsersFixtures?.find(
         (fixture) =>
-          fixture.round === userResults.round && fixture.userId === userId
+          fixture.round === userResults.round &&
+          fixture.userId === parseInt(userId)
       );
       if (existingRound) {
         userResults.fixtureId = existingRound.fixtureId;

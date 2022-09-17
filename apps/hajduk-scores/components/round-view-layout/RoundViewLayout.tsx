@@ -52,7 +52,9 @@ export function RoundViewLayout({ onSubmit }: RoundViewLayoutProps) {
               placeholder="Select user"
               mb={4}
               borderRadius={4}
-              onChange={(event) => setSelectedUser(event.target.value)}
+              onChange={(event) =>
+                setSelectedUser(parseInt(event.target.value))
+              }
               defaultValue={users[0].id}
               backgroundColor="#fff"
               maxWidth="65%"

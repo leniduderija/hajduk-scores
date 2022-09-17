@@ -23,8 +23,8 @@ type State = {
     user: User;
     totalUserPoints: number;
   }[];
-  selectedUser: string;
-  setSelectedUser: (value: string) => void;
+  selectedUser: number;
+  setSelectedUser: (value: number) => void;
   setUserFixtures: (value: ApiFixture[]) => void;
   setAllUsersFixtures: (value: ApiFixture[]) => void;
 };
@@ -137,7 +137,7 @@ export const StateProvider = ({ children }: StateProviderProps) => {
         totalUserPoints,
       };
       return {
-        user: users.find((user) => user.id === key),
+        user: users.find((user) => user.id === parseInt(key)),
         totalUserPoints,
       };
     });
